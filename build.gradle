@@ -1,0 +1,159 @@
+buildscript{
+    ext.kotlin_version = '1.3.61'
+    ext.serialization_version = '0.14.0'
+    ext.kotlinx_html_version = "0.6.11"
+    ext.jpersistence_version = '0.8.10'
+    ext.ktor_version = '1.2.6'
+    ext.eventbus_version = '0.4.04'
+    ext.coroutines_version = '1.3.3'
+    ext.kutil_version = '0.2.0'
+    ext.microutils_logging_version = '1.6.26'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://daiv.org/artifactory/gradle-dev-local" }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+    }
+}
+
+//plugins {
+//    id 'org.jetbrains.kotlin.js' version '1.3.61'
+//}
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+def jvmProjects = subprojects.findAll { gradle.ext.jvmProjects.contains(it.name) }
+def commonProjects = subprojects.findAll { gradle.ext.commonProjects.contains(it.name) }
+def jsProjects = subprojects.findAll { gradle.ext.jsProjects.contains(it.name) }
+allprojects {
+    group 'org.daiv.learn.mover'
+    version '1.0-SNAPSHOT'
+    apply plugin: 'idea'
+    repositories {
+        maven {
+            url "https://daiv.org/artifactory/private-daiv-local"
+            credentials {
+                username "$daiv_user"
+                password "$daiv_password"
+            }
+        }
+        maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    }
+}
+
+configure(jsProjects) {
+    buildscript {
+        repositories {
+            jcenter()
+            mavenLocal()
+            maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+        }
+
+        dependencies {
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        }
+    }
+
+    apply plugin: 'kotlin2js'
+    apply plugin: 'kotlin-platform-js'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+        maven { url "https://daiv.org/artifactory/gradle-dev-local" }
+    }
+
+    dependencies {
+        compile group: 'org.daiv.jpersistence', name: 'jpersistence-js', version: "$jpersistence_version"
+        compile "org.daiv.util:kutil-js:$kutil_version"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-js"
+        compile "org.jetbrains.kotlinx:kotlinx-html-js:${kotlinx_html_version}"
+        compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_version"
+        compile group: 'io.github.microutils', name: 'kotlin-logging-js', version: "$microutils_logging_version"
+        testImplementation "org.jetbrains.kotlin:kotlin-test-js"
+    }
+}
+
+configure(commonProjects) {
+    buildscript {
+
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        }
+    }
+
+    repositories {
+        maven { url "https://daiv.org/artifactory/gradle-dev-local" }
+        mavenCentral()
+        jcenter()
+        maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+    }
+    apply plugin: 'kotlin-platform-common'
+
+    dependencies {
+        compile group: 'org.daiv.jpersistence', name: 'jpersistence', version: "$jpersistence_version"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+        compile "org.daiv.websocket:eventbus:$eventbus_version"
+        compile "org.daiv.util:kutil:$kutil_version"
+        compile group: 'io.github.microutils', name: 'kotlin-logging-common', version: "$microutils_logging_version"
+        compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
+        testCompile "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
+    }
+}
+
+configure(jvmProjects) {
+    apply plugin: 'kotlin'
+    apply plugin: 'kotlin-platform-jvm'
+    apply plugin: 'org.junit.platform.gradle.plugin'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://daiv.org/artifactory/gradle-dev-local" }
+        maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+        maven { url "https://dl.bintray.com/kotlin/ktor" }
+//        maven { url "http://www.dukascopy.com/client/jforexlib/publicrepo/" }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
+        compile "io.github.microutils:kotlin-logging:$microutils_logging_version"
+        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha4'
+        compile group: 'org.daiv.jpersistence', name: 'jpersistence-jvm', version: "$jpersistence_version"
+        compile "org.daiv.util:kutil-jvm:$kutil_version"
+
+        testCompile "io.mockk:mockk:1.9.3"
+        testCompile "net.bytebuddy:byte-buddy:1.8.8"
+        testCompile 'org.jetbrains.kotlin:kotlin-test:1.1.0'
+        testCompile('org.jetbrains.spek:spek-api:1.1.5') {
+            exclude group: 'org.jetbrains.kotlin'
+        }
+        testRuntime('org.jetbrains.spek:spek-junit-platform-engine:1.1.5') {
+            exclude group: 'org.junit.platform'
+            exclude group: 'org.jetbrains.kotlin'
+        }
+    }
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+}
+
+//kotlin.target.browser { }

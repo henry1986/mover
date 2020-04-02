@@ -1,0 +1,32 @@
+#canvas1 {
+   background: grey;
+/*   position: absolute;
+   left: 0;
+   top: 0;
+   */
+}
+
+#canvas2 {
+/*
+   position: absolute;
+   left: 0;
+   top: 0;
+   */
+}
+
+.overview{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 8fr;
+    grid-column-gap: 0.5em;
+}
+
+.streetMap{
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.head{
+    grid-column: 1;
+    grid-row: 1;
+}

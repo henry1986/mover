@@ -1,0 +1,24 @@
+
+apply plugin: 'kotlinx-serialization'
+
+dependencies {
+    expectedBy project(":data")
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    compile "io.ktor:ktor-websockets:$ktor_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "io.ktor:ktor-gson:$ktor_version"
+    compile "org.daiv.websocket:eventbus-jvm:$eventbus_version"
+    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
+
+}
+jar {
+    manifest {
+//        attributes 'Main-Class': 'org.daiv.ew.tester.StrategyTesterKt'
+        attributes 'Main-Class': 'org.daiv.learn.mover.MServerKt'
+    }
+
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

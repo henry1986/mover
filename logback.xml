@@ -1,0 +1,55 @@
+<!--
+  ~ Copyright (c) 2018. Martin Heinrich
+  ~ This source code is property of the EA GmbH.
+  -->
+
+<configuration>
+    <!-- STDOUT APPENDER -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %marker %logger{20} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--<turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">-->
+        <!--<Marker>READ</Marker>-->
+        <!--<onMatch>DENY</onMatch>-->
+    <!--</turboFilter>-->
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>DB_OPEN</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>db/DEU_IDX/volumeEWBid.db</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>db/DEU_IDX/candleEWBid.db</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>DB_CLOSE</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>CREATE</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>WRITE</Marker>
+        <onMatch>DENY</onMatch>
+    </turboFilter>
+
+    <!--<logger name="org.daiv.reflection.persister.Persister" level="TRACE"/>-->
+    <logger name="org.daiv.websocket.EventBusReceiver" level="INFO"/>
+    <logger name="org.daiv.websocket.ControlledChannelImpl" level="INFO"/>
+    <logger name="org.daiv.reflection.persister.Persister" level="TRACE"/>
+    <!--<logger additivity="false" level="DEBUG">-->
+    <!--<appender-ref ref="STDOUT"/>-->
+    <!--<appender-ref ref="FILE"/>-->
+    <!--</logger>-->
+
+    <root level="TRACE">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
