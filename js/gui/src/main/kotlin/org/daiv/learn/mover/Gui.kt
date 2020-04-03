@@ -13,9 +13,22 @@ import kotlin.browser.window
 
 fun CanvasRenderingContext2D.clearAll() = clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
 
-fun CanvasRenderingContext2D.drawRect(x: Double, y: Double) {
+fun CanvasRenderingContext2D.drawACar(x: Double, y: Double, direction: CarDirection) {
     beginPath()
-    rect(x, y, 20.0, 20.0)
+    when (direction) {
+        CarDirection.North -> {
+            rect(x + 60.0, y, 20.0, 40.0)
+        }
+        CarDirection.East -> {
+            rect(x, y + 60.0, 40.0, 20.0)
+        }
+        CarDirection.South -> {
+            rect(x + 20.0, y, 20.0, 40.0)
+        }
+        CarDirection.West -> {
+            rect(x, y + 20.0, 40.0, 20.0)
+        }
+    }
     fillStyle = "#FF0000"
     fill()
     closePath()
@@ -64,13 +77,14 @@ class CarDrawable(
     inner class Movement(
         val offsetX: Double,
         val offsetY: Double,
+        val goalDirection: CarDirection,
         val block: (Double, Double) -> Boolean
     ) {
         fun CanvasRenderingContext2D.nextField(currentX: Double, currentY: Double) {
             clearAll()
             val nextX = currentX + offsetX * fieldSize
             val nextY = currentY + offsetY * fieldSize
-            drawRect(nextX, nextY)
+            drawACar(nextX, nextY, goalDirection)
             if (block(nextX, nextY)) {
                 window.requestAnimationFrame { nextField(nextX, nextY) }
             } else {
@@ -86,25 +100,28 @@ class CarDrawable(
     }
 
     fun move(goDirection: GoDirection) {
-        val movement = carPosition.carDirection.move(goDirection)
-        movement(movement.x, movement.y)
+        movement(carPosition.carDirection.move(goDirection))
     }
 
-    private fun movement(xDir: Int, yDir: Int) = Movement(xDir * velocity, yDir * velocity) { nextX, nextY ->
-        val xGoalPosition = fieldSize * x + xDir * fieldSize
-        val xCondition = if (xDir > 0) {
-            (xGoalPosition) - nextX > 0
-        } else {
-            (xGoalPosition) - nextX < 0
-        }
-        val yGoalPosition = fieldSize * y + yDir * fieldSize
-        val yCondition = if (yDir > 0) {
-            yGoalPosition - nextY > 0
-        } else {
-            yGoalPosition - nextY < 0
-        }
-        xCondition || yCondition
-    }.draw()
+    private fun movement(movementCoordinates: MovementCoordinates): CarDrawable {
+        val xDir: Int = movementCoordinates.x
+        val yDir: Int = movementCoordinates.y
+        return Movement(xDir * velocity, yDir * velocity, movementCoordinates.carDirection) { nextX, nextY ->
+            val xGoalPosition = fieldSize * x + xDir * fieldSize
+            val xCondition = if (xDir > 0) {
+                (xGoalPosition) - nextX > 0
+            } else {
+                (xGoalPosition) - nextX < 0
+            }
+            val yGoalPosition = fieldSize * y + yDir * fieldSize
+            val yCondition = if (yDir > 0) {
+                yGoalPosition - nextY > 0
+            } else {
+                yGoalPosition - nextY < 0
+            }
+            xCondition || yCondition
+        }.draw()
+    }
 }
 
 fun CanvasRenderingContext2D.drawCar(move: Move, mainComponents: MainComponents, doneCallback: () -> Unit) {

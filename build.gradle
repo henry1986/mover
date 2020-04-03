@@ -40,13 +40,13 @@ allprojects {
     version '1.0-SNAPSHOT'
     apply plugin: 'idea'
     repositories {
-        maven {
-            url "https://daiv.org/artifactory/private-daiv-local"
-            credentials {
-                username "$daiv_user"
-                password "$daiv_password"
-            }
-        }
+//        maven {
+//            url "https://daiv.org/artifactory/private-daiv-local"
+//            credentials {
+//                username "$daiv_user"
+//                password "$daiv_password"
+//            }
+//        }
         maven { url "https://dl.bintray.com/kotlin/kotlinx" }
     }
 }

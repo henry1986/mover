@@ -19,7 +19,7 @@ class MovingStrategy(val carProxy: CarProxy) {
 
     fun run() {
         carProxy.resetVelocity(5)
-//        forward()
+        forward()
         forward()
         forward()
         right()
