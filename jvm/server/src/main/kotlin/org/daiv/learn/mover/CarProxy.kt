@@ -29,7 +29,7 @@ class CarProxy(val carProxyCom: CarProxyCom, val streetMap: StreetMap) {
         val prev = streetMap[carPosition]
         carPosition = carPosition.move(goDirection)
         val after = streetMap[carPosition]
-        if (!prev.isTransitionPossible(after)) {
+        if (prev == null || after == null || !prev.isTransitionPossible(after)) {
             carProxyCom.send(MoverMessage.serializer(), MoverMessage("error -> you have left the street", "red")) {
 
             }

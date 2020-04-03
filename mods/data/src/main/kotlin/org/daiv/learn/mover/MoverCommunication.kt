@@ -177,7 +177,7 @@ data class StreetCoordinate(override val x: Int, override val y: Int) : Coordina
 @Serializable
 data class StreetMap(val map: Map<StreetCoordinate, StreetElement>) {
     operator fun get(streetCoordinate: StreetCoordinate): StreetElement = map[streetCoordinate]!!
-    operator fun get(carPosition: CarPosition): StreetElement = map[carPosition.toStreetCoordinate()]!!
+    operator fun get(carPosition: CarPosition): StreetElement? = map[carPosition.toStreetCoordinate()]
 }
 
 val moverModule = SerializersModule {
