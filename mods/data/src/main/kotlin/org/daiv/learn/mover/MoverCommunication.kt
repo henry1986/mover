@@ -19,6 +19,8 @@ enum class StreetConfig(
     StraightVerticalLeft(false, true, false),
     Cross(true, true, true);
 
+    val isStraight = !firstOpen && !secondOpen
+
     override val isNorthOpen: Boolean = !isHorizontal || (isHorizontal && firstOpen)
     override val isSouthOpen: Boolean = !isHorizontal || (isHorizontal && secondOpen)
     override val isLeftOpen: Boolean = isHorizontal || (!isHorizontal && firstOpen)

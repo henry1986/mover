@@ -11,6 +11,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.webjars.Webjars
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import org.daiv.websocket.*

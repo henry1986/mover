@@ -21,11 +21,15 @@ class CarProxy(val carProxyCom: CarProxyCom, val streetMap: StreetMap) {
         carProxyCom.send(Move.serializer(), move) {
             runBlocking {
                 channel.send(5)
+                logger.trace { "sended" }
+
             }
         }
+        logger.trace { "start blocking" }
         runBlocking {
             channel.receive()
         }
+        logger.trace { "ended blocking" }
         val prev = streetMap[carPosition]
         carPosition = carPosition.move(goDirection)
         val after = streetMap[carPosition]
@@ -51,5 +55,13 @@ class CarProxy(val carProxyCom: CarProxyCom, val streetMap: StreetMap) {
 
     fun left() {
         send(GoDirection.Left)
+    }
+
+    fun isThisFieldForwardOnly(): Boolean {
+        val street = streetMap[carPosition]!!
+        if(street !is Street){
+            return false
+        }
+        return street.streetConfig.isStraight
     }
 }

@@ -87,7 +87,7 @@ class MoverSessionHandler(override val controlledChannel: ControlledChannel) : M
         carProxy = CarProxy(this, streetMap)
         toFrontend(InitField.serializer(), InitField(main, streetMap))
         GlobalScope.launch {
-            MovingStrategy(carProxy).run()
+            MovingStrategy2(carProxy).run()
 //            InnerTestStrategy(carProxy).run()
         }
     }

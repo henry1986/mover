@@ -189,6 +189,7 @@ fun main() {
             eb.currentTranslaters = {
                 listOf<Translater<out WSEvent>>(translater(Move.serializer(), moverModule) {
                     gui.moveCar(it) {
+                        println("send response")
                         eb.send(MovementResponse.serializer(), MovementResponse(), MovementResponse.serializer()) {}
                     }
                 }, translater(MoverMessage.serializer(), moverModule) {
